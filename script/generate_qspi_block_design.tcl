@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2022.1
+set scripts_vivado_version 2021.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -41,10 +41,10 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # project, but make sure you do not have an existing project
 # <./myproj/project_1.xpr> in the current working folder.
 
-set list_projs [get_projects -quiet]
+#set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-#   create_project project_1 myproj -part xcu250-figd2104-2L-e
-#   set_property BOARD_PART xilinx.com:au250:part0:1.3 [current_project]
+#   create_project project_1 myproj -part xcu280-fsvh2892-2l-e
+#   set_property BOARD_PART xilinx.com:au280:part0:1.1 [current_project]
 }
 
 
@@ -347,7 +347,7 @@ proc create_root_design { parentCell } {
   # Create address segments
   assign_bd_address -offset 0x00010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces AXI_LITE_0] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces AXI_LITE_0] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x00020000 -range 0x00040000 -target_address_space [get_bd_addr_spaces AXI_LITE_0] [get_bd_addr_segs cms_subsystem_0/s_axi_ctrl/Mem] -force
+  assign_bd_address -offset 0x00020000 -range 0x00040000 -target_address_space [get_bd_addr_spaces AXI_LITE_0] [get_bd_addr_segs cms_subsystem_0/s_axi_ctrl/Mem0] -force
 
 
   # Restore current instance
