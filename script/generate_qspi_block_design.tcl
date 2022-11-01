@@ -42,10 +42,10 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # <./myproj/project_1.xpr> in the current working folder.
 
 #set list_projs [get_projects -quiet]
-if { $list_projs eq "" } {
+#if { $list_projs eq "" } {
 #   create_project project_1 myproj -part xcu280-fsvh2892-2l-e
 #   set_property BOARD_PART xilinx.com:au280:part0:1.1 [current_project]
-}
+#}
 
 
 # CHANGE DESIGN NAME HERE

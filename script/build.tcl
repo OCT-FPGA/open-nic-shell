@@ -291,7 +291,7 @@ dict for {module module_dir} $module_dict {
 
 
 # Generate the system_config's QSPI block design, while the project is open
-source ${script_dir}/generate_qspi_block_design.tcl
+#source ${script_dir}/generate_qspi_block_design.tcl
 
 
 # Close the Manage IP project
@@ -327,6 +327,7 @@ set_property verilog_define $verilog_define [current_fileset]
 dict for {ip ip_dir} $ip_dict {
     read_ip -quiet ${ip_dir}/${ip}.xci
 }
+source ${script_dir}/generate_qspi_block_design.tcl
 
 # Read user plugin files
 set include_dirs [get_property include_dirs [current_fileset]]
