@@ -15,6 +15,7 @@
 // limitations under the License.
 //
 // *************************************************************************
+`include "open_nic_shell_macros.vh"
 `timescale 1ns/1ps
 module box_250mhz #(
   parameter int MIN_PKT_LEN   = 64,
