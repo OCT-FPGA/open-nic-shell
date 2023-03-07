@@ -376,7 +376,7 @@ read_vhdl -quiet [glob -nocomplain -directory $src_dir "*.vhd"]
 
 # Set vivado generic
 set design_params(-build_timestamp) "32'h$design_params(-build_timestamp)"
-set generic ""
+set generic [get_property generic [current_fileset]]
 foreach {key value} [array get design_params] {
     set p [string toupper [string range $key 1 end]]
     lappend generic "$p=$value"
