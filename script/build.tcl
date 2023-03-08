@@ -90,7 +90,9 @@ array set build_options {
     -synth_ip    1
     -impl        0
     -post_impl   0
+    -qspi_support 1 
     -user_plugin ""
+    -user_build_dir ""
     -bitstream_userid  "0xDEADC0DE"
     -bitstream_usr_access "0x66669999"
 }
@@ -161,7 +163,11 @@ if {![string equal $tag ""]} {
     set build_name ${build_name}_${tag}
 }
 
-set build_dir [file normalize ${root_dir}/build/${build_name}]
+if {![string equal $user_build_dir ""]} {
+    set build_dir [file normalize $user_build_dir/${build_name}] 
+} else {
+    set build_dir [file normalize ${root_dir}/build/${build_name}]
+}
 if {[file exists $build_dir]} {
     if {!$rebuild } {
         puts "Found existing build directory $build_dir"
@@ -327,7 +333,10 @@ set_property verilog_define $verilog_define [current_fileset]
 dict for {ip ip_dir} $ip_dict {
     read_ip -quiet ${ip_dir}/${ip}.xci
 }
-source ${script_dir}/generate_qspi_block_design.tcl
+
+if {$qspi_support} {
+    source ${script_dir}/generate_qspi_block_design.tcl
+}
 
 # Read user plugin files
 set include_dirs [get_property include_dirs [current_fileset]]
