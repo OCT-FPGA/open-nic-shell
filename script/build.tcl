@@ -97,6 +97,7 @@ array set build_options {
     -impl        0
     -post_impl   0
     -user_plugin ""
+    -user_build_dir ""
     -bitstream_userid  "0xDEADC0DE"
     -bitstream_usr_access "0x66669999"
     -sim  0
@@ -177,7 +178,11 @@ if {![string equal $tag ""]} {
     set build_name ${build_name}_${tag}
 }
 
-set build_dir [file normalize ${root_dir}/build/${build_name}]
+if {![string equal $user_build_dir ""]} {
+    set build_dir [file normalize $user_build_dir/${build_name}] 
+} else {
+    set build_dir [file normalize ${root_dir}/build/${build_name}]
+}
 if {[file exists $build_dir]} {
     if {!$rebuild } {
         puts "Found existing build directory $build_dir"
@@ -384,7 +389,7 @@ read_vhdl -quiet [glob -nocomplain -directory $src_dir "*.vhd"]
 
 # Set vivado generic
 set design_params(-build_timestamp) "32'h$design_params(-build_timestamp)"
-set generic ""
+set generic [get_property generic [current_fileset]]
 foreach {key value} [array get design_params] {
     set p [string toupper [string range $key 1 end]]
     lappend generic "$p=$value"
