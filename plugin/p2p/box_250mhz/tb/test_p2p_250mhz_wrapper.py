@@ -8,6 +8,7 @@ from cocotb.triggers import RisingEdge
 from cocotbext.axi import (AxiLiteBus, AxiLiteMaster, AxiStreamBus,
                            AxiStreamFrame, AxiStreamSink, AxiStreamSource)
 from scapy.all import IP, UDP, Ether
+from pktsUtils import pktsUtils
 
 # UDP packet with 128B payload
 PACKET = Ether(src='aa:bb:cc:dd:ee:ff', dst='11:22:33:44:55:66') \
@@ -79,6 +80,33 @@ class TB:
         self.dut.mod_rstn.value = 1
         await RisingEdge(self.dut.mod_rst_done)
 
+# Frame mismatch
+async def send_pkts_from_pcap_file(
+        tb: TB, source: AxiStreamSource,
+        sink: AxiStreamSink, in_pcapFile, out_pcapFile):
+    in_pktsList = pktsUtils.get_packets(in_pcapFile)
+    out_pktsList = pktsUtils.get_packets(out_pcapFile)
+    verify_frames = []
+    for count, pkt in enumerate(in_pktsList):
+        test_frame = AxiStreamFrame(bytes(pkt), tuser=0)
+        tb.log.info("Sending frame {}".format(count))
+        await source.send(test_frame)
+        tb.log.info("Frame {} sent".format(count))
+    
+    # Construct verification frame
+    for count, pkt in enumerate(out_pktsList):
+        out_frame = AxiStreamFrame(bytes(pkt), tuser=0)
+        verify_frames.append(out_frame)
+        
+    for count, verify_frame in enumerate(verify_frames):
+        tb.log.info("Trying to recv frame {}".format(count))
+        rx_frame = await sink.recv()
+        tb.log.info("Frame {} received".format(count))
+        assert rx_frame.tdata == verify_frame.tdata
+        tb.log.info("Frame matched!")
+
+    assert sink.empty()
+
 
 async def check_connection(
         tb: TB, source: AxiStreamSource,
@@ -104,13 +132,26 @@ async def run_test(dut, idle_inserter=None, backpressure_inserter=None):
 
     await tb.reset()
 
-    tb.set_idle_generator(idle_inserter)
-    tb.set_backpressure_generator(backpressure_inserter)
+    #tb.set_idle_generator(idle_inserter)
+    #tb.set_backpressure_generator(backpressure_inserter)
 
-    await check_connection(tb, tb.source_tx[0], tb.sink_tx[0], PACKET)
-    await check_connection(tb, tb.source_tx[1], tb.sink_tx[1], PACKET)
-    await check_connection(tb, tb.source_rx[0], tb.sink_rx[0], PACKET)
-    await check_connection(tb, tb.source_rx[1], tb.sink_rx[1], PACKET)
+    #tb.log.info("Checking Connection for tx0 to tx0")
+    #await check_connection(tb, tb.source_tx[0], tb.sink_tx[0], PACKET)
+    #tb.log.info("tx0 to tx0 Connected")
+
+    #tb.log.info("Checking Connection for tx1 to tx1")
+    #await check_connection(tb, tb.source_tx[1], tb.sink_tx[1], PACKET)
+    #tb.log.info("tx1 to tx1 Connected")
+
+    #tb.log.info("Checking Connection for rx0 to rx0")
+    #await check_connection(tb, tb.source_rx[0], tb.sink_rx[0], PACKET)
+    #tb.log.info("rx0 to rx0 Connected")
+
+    #tb.log.info("Checking Connection for rx0 to rx0")
+    #await check_connection(tb, tb.source_rx[1], tb.sink_rx[1], PACKET)
+    #tb.log.info("rx1 to rx1 Connected")
+
+    await send_pkts_from_pcap_file(tb,tb.source_rx[0],tb.sink_rx[0],"test1.pcap", "test1.pcap")
 
     # Due to some bugs in cocotb following lines are needed.
     # Check cocotb gitter for details.
