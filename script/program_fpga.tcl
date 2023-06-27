@@ -10,6 +10,7 @@ array set options {
     -bitstream_path "../build/au280/open_nic_shell/open_nic_shell.runs/impl_1/open_nic_shell.bit"
     -probes_path    ""
     -board          au50
+    -jtag_id        ""
 }
 
 # Expect arguments in the form of `-argument value`
@@ -34,12 +35,14 @@ source ${script_dir}/board_settings/${board}.tcl
 puts "Program file: $options(-bitstream_path)"
 puts "Probes file: $options(-probes_path)"
 puts "Board: $options(-board)"
-puts "HW device: $hw_device"
+puts "jtag_id: $options(-jtag_id)"
+#puts "HW device: $hw_device"
 
 open_hw_manager
 connect_hw_server -allow_non_jtag
-open_hw_target
-current_hw_device [get_hw_devices $hw_device]
+
+open_hw_target [get_hw_targets "*/xilinx_tcf/Xilinx/$jtag_id"]
+set hw_device [current_hw_device]
 refresh_hw_device -update_hw_probes false [lindex [get_hw_devices $hw_device] 0]
 set_property PROBES.FILE ${options(-probes_path)} [get_hw_devices $hw_device]
 set_property FULL_PROBES.FILE ${options(-probes_path)} [get_hw_devices $hw_device]
