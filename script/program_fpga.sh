@@ -3,10 +3,10 @@
 # Tested with Supermicro server.
 
 echo $#
-if [[ $# -le 1 ]] || [[ -z EXTENDED_DEVICE_BDF1 ]] || [[ -z $XILINX_VIVADO ]]; then
-    echo "Usage: EXTENDED_DEVICE_BDF1=<EXTENDED_DEVICE_BDF1> program_device.sh BITSTREAM_PATH BOARD [PROBES_PATH]"
+if [[ $# -le 2 ]] || [[ -z EXTENDED_DEVICE_BDF1 ]] || [[ -z $XILINX_VIVADO ]]; then
+    echo "Usage: EXTENDED_DEVICE_BDF1=<EXTENDED_DEVICE_BDF1> ./program_fpga.sh BITSTREAM_PATH BOARD jtag_id "
     echo "Please export EXTENDED_DEVICE_BDF1 and [EXTENDED_DEVICE_BDF2 (if needed for 2 port boards)]"
-    echo "Example: EXTENDED_DEVICE_BDF1=<0000:86:00.0> program_device.sh BITSTREAM_PATH BOARD [PROBES_PATH]"
+    echo "Example: EXTENDED_DEVICE_BDF1=0000:86:00.0 ./program_fpga.sh BITSTREAM_PATH BOARD jtag_id "
     echo "Please ensure vivado is loaded into system path."
     exit 1
 fi
@@ -17,8 +17,7 @@ set -x
 bridge_bdf=""
 bitstream_path=$1
 board=$2
-probes_path="${3:-}"
-# ^^ Probes are used for specifying hardware debugger symbols.
+jtag_id=$3
 
 echo "Make sure that the netdev iface for open nic shell is down before running this script!"
 echo "Example: sudo ifconfig enp134s0f0 down."
@@ -57,7 +56,7 @@ fi
 vivado -mode tcl -source ./program_fpga.tcl \
     -tclargs -board $board \
     -bitstream_path $bitstream_path \
-    -probes_path $probes_path
+	-jtag_id 		$jtag_id
 
 # Rescan
 echo 1 | sudo tee "/sys/bus/pci/devices/${bridge_bdf}/rescan" > /dev/null
