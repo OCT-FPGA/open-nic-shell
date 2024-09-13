@@ -415,12 +415,12 @@ read_xdc ${build_dir}/run_params.xdc
 # Simulate design
 if {$sim} {
     # Generate simulation libraries
-    set modelsim_lib_path ${sim_params(-sim_lib_path)}/modelsim
+    set modelsim_lib_path ${sim_params(-sim_lib_path)}/questa
     if {[file exists ${modelsim_lib_path}]} {
         puts "Skipping compilation of simulation libraries as directory ${modelsim_lib_path} exists."
     } else {
         puts "Compiling simulation libraries in directory ${modelsim_lib_path}."
-        compile_simlib -simulator modelsim -simulator_exec_path ${sim_params(-sim_exec_path)} \
+        compile_simlib -simulator questa -simulator_exec_path ${sim_params(-sim_exec_path)} \
             -family all -language all -library all \
             -dir ${modelsim_lib_path}
     }

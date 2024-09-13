@@ -16,14 +16,14 @@ if {${env(GUI)}} {
 # need to be linked. These are copied from there.
 
 # Simulation libraries generated using Vivado 2021.2
-vsim -voptargs=+acc -onfinish $onfinish \
-    -L xil_defaultlib -L axis_infrastructure_v1_1_0 -L axis_register_slice_v1_1_25 \
-    -L axis_switch_v1_1_25 -L axi_infrastructure_v1_1_0 -L fifo_generator_v13_2_6 \
-    -L axi_clock_converter_v2_1_24 -L generic_baseblocks_v2_1_0 -L axi_register_slice_v2_1_25 \
-    -L axi_data_fifo_v2_1_24 -L axi_crossbar_v2_1_26 -L unisims_ver -L unimacro_ver -L secureip \
-    -L xpm -lib xil_defaultlib \
-    -pli $pli \
-    xil_defaultlib.${env(DUT)} xil_defaultlib.glbl
+#vsim -voptargs=+acc -onfinish $onfinish \
+#    -L xil_defaultlib -L axis_infrastructure_v1_1_0 -L axis_register_slice_v1_1_25 \
+#    -L axis_switch_v1_1_25 -L axi_infrastructure_v1_1_0 -L fifo_generator_v13_2_6 \
+#    -L axi_clock_converter_v2_1_24 -L generic_baseblocks_v2_1_0 -L axi_register_slice_v2_1_25 \
+#    -L axi_data_fifo_v2_1_24 -L axi_crossbar_v2_1_26 -L unisims_ver -L unimacro_ver -L secureip \
+#    -L xpm -lib xil_defaultlib \
+#    -pli $pli \
+#    xil_defaultlib.${env(DUT)} xil_defaultlib.glbl
 
 # # Simulation libraries generated using Vivado 2021.2, including VitisNetP4 toolchain
 # vsim -voptargs=+acc -onfinish $onfinish \
@@ -36,6 +36,15 @@ vsim -voptargs=+acc -onfinish $onfinish \
 #     -pli $pli \
 #     xil_defaultlib.${env(DUT)} xil_defaultlib.glbl
 
+ vsim -voptargs=+acc -onfinish $onfinish -suppress 14408 \
+     -L xil_defaultlib -L axis_infrastructure_v1_1_0 -L axis_register_slice_v1_1_27 \
+     -L axis_switch_v1_1_27 -L cam_v2_4_0 -L vitis_net_p4_v1_2_0 -L axi_infrastructure_v1_1_0 \
+     -L fifo_generator_v13_2_7 -L axi_clock_converter_v2_1_26 -L generic_baseblocks_v2_1_0 \
+     -L axi_register_slice_v2_1_27 -L axi_data_fifo_v2_1_26 -L axi_crossbar_v2_1_28 -L unisims_ver \
+     -L unimacro_ver -L secureip -L xpm \
+     -lib xil_defaultlib \
+     -pli $pli \
+     xil_defaultlib.${env(DUT)} xil_defaultlib.glbl
 log -recursive /*
 
 if {${env(GUI)}} {
